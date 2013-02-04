@@ -19,6 +19,8 @@ import org.ocpsoft.prettytime.Duration;
 import org.ocpsoft.prettytime.TimeFormat;
 import org.ocpsoft.prettytime.TimeUnit;
 
+import java.util.regex.Pattern;
+
 /**
  * Represents a simple method of formatting a specific {@link Duration} of time
  *
@@ -27,9 +29,10 @@ import org.ocpsoft.prettytime.TimeUnit;
 public class SimpleTimeFormat implements TimeFormat
 {
    private static final String NEGATIVE = "-";
-   public static final String SIGN = "%s";
-   public static final String QUANTITY = "%n";
-   public static final String UNIT = "%u";
+   private static final Pattern SIGN = Pattern.compile("%s");
+   private static final Pattern QUANTITY = Pattern.compile("%n");
+   private static final Pattern UNIT = Pattern.compile("%u");
+   private static final Pattern WHITESPACE = Pattern.compile("\\s+");
 
    private String singularName = "";
    private String pluralName = "";
@@ -69,7 +72,7 @@ public class SimpleTimeFormat implements TimeFormat
       {
          result.append(futurePrefix).append(" ").append(time).append(" ").append(futureSuffix);
       }
-      return result.toString().replaceAll("\\s+", " ").trim();
+      return WHITESPACE.matcher(result.toString()).replaceAll(" ").trim();
    }
 
    @Override
@@ -90,9 +93,9 @@ public class SimpleTimeFormat implements TimeFormat
 
    private String applyPattern(final String sign, final String unit, final long quantity)
    {
-      String result = getPattern(quantity).replaceAll(SIGN, sign);
-      result = result.replaceAll(QUANTITY, String.valueOf(quantity));
-      result = result.replaceAll(UNIT, unit);
+      String result = SIGN.matcher(getPattern(quantity)).replaceAll(sign);
+      result = QUANTITY.matcher(result).replaceAll(String.valueOf(quantity));
+      result = UNIT.matcher(result).replaceAll(unit);
       return result;
    }
 

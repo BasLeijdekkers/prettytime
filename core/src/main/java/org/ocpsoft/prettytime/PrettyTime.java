@@ -145,11 +145,7 @@ public class PrettyTime
    private Duration calculateDuration(final long difference)
    {
       long absoluteDifference = Math.abs(difference);
-
-      // Required for thread-safety
-      List<TimeUnit> units = new ArrayList<TimeUnit>(getUnits().size());
-      units.addAll(getUnits());
-
+      List<TimeUnit> units = getUnits();
       DurationImpl result = new DurationImpl();
 
       for (int i = 0; i < units.size(); i++)
